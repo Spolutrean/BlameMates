@@ -20,5 +20,12 @@
 
     <actions>
         <!-- Add your actions here -->
+        <action id="com.blame.mates.ShowContactMenuAction" class="com.blame.mates.ShowContactMenuAction"
+                text="Contact with Author"
+                description="Contact with Author via various social media">
+            <add-to-group group-id="EditorGutterVcsPopupMenu" anchor="first"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt A"/>
+        </action>
     </actions>
+
 </idea-plugin>

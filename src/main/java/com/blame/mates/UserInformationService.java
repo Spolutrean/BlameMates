@@ -1,23 +1,27 @@
 package com.blame.mates;
 
+import com.intellij.openapi.components.Service;
 import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * A service for interacting with user information.
  */
-public class UserInformationService {
-    public UserInformationService(Project project) {
+@Service
+public final class UserInformationService {
+
+    public UserInformationService() {
     }
 
+    @NotNull
     public List<ContactMethod> getUserContactMethods(String userEmail) {
-        return null;
+        return new ArrayList<>();
     }
 
-    public static UserInformationService getInstance(@NotNull Project project) {
-        return ServiceManager.getService(project, UserInformationService.class);
+    public static UserInformationService getInstance() {
+        return ServiceManager.getService(UserInformationService.class);
     }
 }

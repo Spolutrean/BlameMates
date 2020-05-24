@@ -16,7 +16,6 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
-        <projectService serviceImplementation="com.blame.mates.UserInformationService"/>
     </extensions>
 
     <actions>

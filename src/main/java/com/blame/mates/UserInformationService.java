@@ -1,5 +1,6 @@
 package com.blame.mates;
 
+import com.intellij.openapi.components.Service;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
@@ -9,8 +10,10 @@ import java.util.List;
 /**
  * A service for interacting with user information.
  */
-public class UserInformationService {
-    public UserInformationService(Project project) {
+@Service
+public final class UserInformationService {
+
+    public UserInformationService() {
     }
 
     public List<ContactMethod> getUserContactMethods(String userEmail) {

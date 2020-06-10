@@ -19,11 +19,16 @@
     </extensions>
 
     <actions>
-        <!-- Add your actions here -->
+        <!-- Groups -->
+        <group id="com.blame.mates.PopupContactActionGroup">
+            <add-to-group group-id="EditorPopupMenu" anchor="first"/>
+            <separator/>
+        </group>
+        <!-- Actions -->
         <action id="com.blame.mates.ShowContactMenuAction" class="com.blame.mates.ShowContactMenuAction"
-                text="Contact with Author"
-                description="Contact with Author via various social media">
-            <add-to-group group-id="EditorGutterVcsPopupMenu" anchor="first"/>
+                text="Contact Line Author"
+                description="Contact the author of this line via various social media">
+            <add-to-group group-id="com.blame.mates.PopupContactActionGroup" anchor="first"/>
             <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt A"/>
         </action>
     </actions>

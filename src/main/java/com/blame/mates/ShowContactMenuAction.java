@@ -22,7 +22,7 @@ public class ShowContactMenuAction extends AnAction {
                         null,
                         new ContactMenuGroup(),
                         e.getDataContext(),
-                        JBPopupFactory.ActionSelectionAid.NUMBERING,
+                        null,
                         false);
 
         listPopup.showCenteredInCurrentWindow(e.getProject());

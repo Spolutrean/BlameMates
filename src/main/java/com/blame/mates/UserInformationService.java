@@ -6,9 +6,6 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.intellij.openapi.components.Service;
 import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.module.ModuleManager;
-import com.intellij.openapi.project.ProjectManager;
-import com.intellij.openapi.roots.ModuleRootManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -18,6 +15,8 @@ import java.nio.file.Files;
 import java.util.*;
 
 import com.fasterxml.jackson.databind.*;
+
+import static com.blame.mates.UserInformationUtil.isValidEmail;
 
 /**
  * A service for interacting with user information.
@@ -106,15 +105,6 @@ public final class UserInformationService {
     }
 
     /**
-     * Checks that the user email provided is valid
-     * @param userEmail String containing user email
-     * @return true if the email is valid, false otherwise
-     */
-    private boolean isEmailValid(String userEmail) {
-        return userEmail != null && userEmail.matches("[^@]+@[^@\\.]+\\..+");
-    }
-
-    /**
      * Gets a list of contact methods, corresponding to the user with the provided email, currently present
      * in the json data file
      * @param userEmail String containing user email
@@ -123,7 +113,7 @@ public final class UserInformationService {
      */
     @NotNull
     public List<ContactMethod> getUserContactMethods(String userEmail) {
-        if (!isEmailValid(userEmail)) {
+        if (!isValidEmail(userEmail)) {
             return new ArrayList<>();
         }
 
@@ -143,7 +133,7 @@ public final class UserInformationService {
      * @param contactMethod ContactMethod to add
      */
     public void addUserContactMethod(String userEmail, ContactMethod contactMethod) {
-        if (contactMethod == null || !isEmailValid(userEmail)) {
+        if (contactMethod == null || !isValidEmail(userEmail)) {
             return;
         }
 
@@ -170,7 +160,7 @@ public final class UserInformationService {
      * @param contactMethod ContactMethod to remove
      */
     public void removeUserContactMethod(String userEmail, ContactMethod contactMethod) {
-        if (contactMethod == null || !isEmailValid(userEmail)) {
+        if (contactMethod == null || !isValidEmail(userEmail)) {
             return;
         }
 
@@ -202,7 +192,7 @@ public final class UserInformationService {
      * @param userEmail String containing user email
      */
     public void addUser(String userEmail) {
-        if (!isEmailValid(userEmail)) {
+        if (!isValidEmail(userEmail)) {
             return;
         }
 
@@ -222,7 +212,7 @@ public final class UserInformationService {
      * @param userEmail String containing user email
      */
     public void removeUser(String userEmail) {
-        if (!isEmailValid(userEmail)) {
+        if (!isValidEmail(userEmail)) {
             return;
         }
 

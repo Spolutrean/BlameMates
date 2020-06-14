@@ -1,6 +1,5 @@
 package com.blame.mates;
 
-import icons.SocialMediaIcons;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.MalformedURLException;
@@ -11,8 +10,7 @@ public final class ContactMethodSimpleFactory {
         return new ContactMethod(
                 ContactMethod.Type.TELEGRAM,
                 new URL("https://t.me/" + nickname),
-                "Telegram",
-                SocialMediaIcons.TELEGRAM
+                "Telegram"
         );
     }
 
@@ -20,8 +18,7 @@ public final class ContactMethodSimpleFactory {
         return new ContactMethod(
                 ContactMethod.Type.EMAIL,
                 new URL("mailto:" + email),
-                "Email",
-                SocialMediaIcons.EMAIL
+                "Email"
         );
     }
 
@@ -29,8 +26,7 @@ public final class ContactMethodSimpleFactory {
         return new ContactMethod(
                 ContactMethod.Type.VK,
                 new URL("https://vk.com/" + nickname),
-                "VK",
-                SocialMediaIcons.VK
+                "VK"
         );
     }
 }

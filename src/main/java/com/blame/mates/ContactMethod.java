@@ -1,19 +1,22 @@
 package com.blame.mates;
 
-import javax.swing.*;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.net.URL;
 
 public class ContactMethod {
     private Type type;
     private URL intentionUrl;
     private String name;
-    private Icon icon;
 
-    public ContactMethod(Type type, URL intentionUrl, String name, Icon icon) {
+    @JsonCreator
+    public ContactMethod(@JsonProperty("type") Type type,
+                         @JsonProperty("intentionUrl") URL intentionUrl,
+                         @JsonProperty("name") String name) {
         this.type = type;
         this.intentionUrl = intentionUrl;
         this.name = name;
-        this.icon = icon;
     }
 
     public Type getType() {
@@ -38,14 +41,6 @@ public class ContactMethod {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Icon getIcon() {
-        return icon;
-    }
-
-    public void setIcon(Icon icon) {
-        this.icon = icon;
     }
 
     public enum Type {

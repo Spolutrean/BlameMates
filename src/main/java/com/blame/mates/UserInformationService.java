@@ -24,8 +24,7 @@ import static com.blame.mates.UserInformationUtil.isValidEmail;
 @Service
 public final class UserInformationService {
 
-    private final String PATH_TO_DATA = "./blameMatesData.json";
-
+    public static final String PATH_TO_DATA = "./blameMatesData.json";
     private Map<String, List<ContactMethod>> userInformation;
 
     public UserInformationService() {

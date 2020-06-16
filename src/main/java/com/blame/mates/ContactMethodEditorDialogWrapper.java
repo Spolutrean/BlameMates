@@ -1,18 +1,24 @@
 package com.blame.mates;
 
-import com.intellij.ui.*;
+import com.intellij.openapi.components.ServiceManager;
 
 import javax.swing.*;
 import java.awt.event.*;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class ContactMethodEditorDialogWrapper extends JDialog {
     private JPanel contentPane;
     private JButton buttonOK;
     private JButton buttonCancel;
-    private JComboBox comboBox1;
-    private JPanel listPanel;
+    private JComboBox comboBox;
+    private JTextField identificator;
+    private JTextField name;
+    private JLabel identificatorHint;
 
-    public ContactMethodEditorDialogWrapper() {
+    private final String userEmail;
+
+    public ContactMethodEditorDialogWrapper(String userEmail) {
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
@@ -44,34 +50,55 @@ public class ContactMethodEditorDialogWrapper extends JDialog {
             }
         }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 
-        CollectionListModel model = new CollectionListModel();
-        model.add("placeholder");
+        this.userEmail = userEmail;
 
-        JList list = new JList(model);
-        ToolbarDecorator toolbarDecorator = ToolbarDecorator.createDecorator(list);
-        toolbarDecorator.setAddAction(new AnActionButtonRunnable() {
+        for (ContactMethod.Type type : ContactMethod.Type.values()) {
+            comboBox.addItem(type.toString().substring(0, 1) + type.toString().substring(1).toLowerCase());
+        }
+        comboBox.addActionListener(new ActionListener() {
             @Override
-            public void run(AnActionButton anActionButton) {
-                model.add("placeholder");
+            public void actionPerformed(ActionEvent actionEvent) {
+                ContactMethod.Type type = ContactMethod.Type.valueOf(
+                        comboBox.getSelectedItem().toString().toUpperCase()
+                );
+
+                String hintText = "";
+                switch (type) {
+                    case EMAIL: hintText = "Enter your email:"; break;
+                    case VK: hintText = "Enter your VK nickname:"; break;
+                    case TELEGRAM: hintText = "Enter your Telegram nickname:"; break;
+                    case OTHER: hintText = "Enter a link for communication via this method:"; break;
+                }
+                identificatorHint.setText(hintText);
             }
         });
-        toolbarDecorator.setRemoveAction(new AnActionButtonRunnable() {
-            @Override
-            public void run(AnActionButton anActionButton) {
-                model.remove(list.getSelectedIndex());
-            }
-        });
-
-        listPanel.add(toolbarDecorator.createPanel());
     }
 
     private void onOK() {
-        // add your code here
+        ContactMethod.Type type = ContactMethod.Type.values()[comboBox.getSelectedIndex()];
+
+        ContactMethod contactMethod = null;
+        String identificatorText = identificator.getText();
+        String nameText = name.getText();
+        try {
+            switch (type) {
+                case EMAIL: contactMethod = ContactMethodSimpleFactory.forEmail(identificatorText, nameText); break;
+                case VK: contactMethod = ContactMethodSimpleFactory.forVK(identificatorText, nameText); break;
+                case TELEGRAM: contactMethod = ContactMethodSimpleFactory.forTelegram(identificatorText, nameText); break;
+                case OTHER: contactMethod = new ContactMethod(type, new URL(identificatorText), nameText); break;
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        UserInformationService uis = ServiceManager.getService(UserInformationService.class);
+        uis.removeUserContactMethod(userEmail, contactMethod);
+        uis.addUserContactMethod(userEmail, contactMethod);
+
         dispose();
     }
 
     private void onCancel() {
-        // add your code here if necessary
         dispose();
     }
 

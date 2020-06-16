@@ -30,7 +30,11 @@
                 text="Contact Line Author"
                 description="Contact the author of this line via various social media">
             <add-to-group group-id="com.blame.mates.PopupContactActionGroup" anchor="first"/>
-            <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt A"/>
+        </action>
+        <action id="com.blame.mates.ShowContactMethodManagerAction" class="com.blame.mates.ShowContactMethodManagerAction"
+                text="Manage Contact Methods"
+                description="Edit contact methods for yourself or others">
+            <add-to-group group-id="com.blame.mates.PopupContactActionGroup" relative-to-action="com.blame.mates.ShowContactMenuAction" anchor="after"/>
         </action>
     </actions>
 

@@ -6,6 +6,7 @@ import com.intellij.ui.*;
 import com.intellij.vcs.log.VcsUser;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -103,7 +104,11 @@ public class ContactMethodManagerDialogWrapper extends JDialog {
         toolbarDecorator.setAddAction(new AnActionButtonRunnable() {
             @Override
             public void run(AnActionButton anActionButton) {
-                (new ContactMethodEditorDialogWrapper(getSelectedUserEmail())).show();
+                ContactMethodEditorDialogWrapper dialog = new ContactMethodEditorDialogWrapper(getSelectedUserEmail());
+                dialog.setSize(new Dimension(500,300));
+                dialog.setResizable(false);
+                dialog.setLocationRelativeTo(null);
+                dialog.setVisible(true);
                 refreshContactMethodListModel(ServiceManager.getService(UserInformationService.class));
             }
         });

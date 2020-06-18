@@ -1,11 +1,19 @@
 <idea-plugin>
     <id>com.blame.mates.blame_mates</id>
-    <name>Plugin display name here</name>
-    <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
+    <name>BlameMates</name>
+    <version>1.0</version>
+    <vendor email="ys9617890962@gmail.com" url="https://github.com/Spolutrean/BlameMates/">Yaroslav Sviridov &amp; Andrey Kashukov</vendor>
 
     <description><![CDATA[
-    Enter short description for your plugin here.<br>
-    <em>most HTML tags may be used</em>
+        Have you ever wondered "Just who wrote this? Let me check the git blame real quick and tell them
+        all I think about their code!" and then realized it was you a few months ago?
+        Wait, there's something off about this intro...
+        <strong>Anyway!</strong>
+        <br>
+        Message the other members of your team easily using any of their preferred email/messengers/social networks
+        with just a couple of clicks using BlameMates! Don't forget to be polite :)
+        <br/>
+        For more info please visit the plugin's Github page, which can be found via the "Plugin homepage" link :)
     ]]></description>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
@@ -13,12 +21,29 @@
     <!-- uncomment to enable plugin in all products
     <depends>com.intellij.modules.lang</depends>
     -->
+    <depends>Git4Idea</depends>
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
     </extensions>
 
     <actions>
-        <!-- Add your actions here -->
+        <!-- Groups -->
+        <group id="com.blame.mates.PopupContactActionGroup">
+            <add-to-group group-id="EditorPopupMenu" anchor="first"/>
+            <separator/>
+        </group>
+        <!-- Actions -->
+        <action id="com.blame.mates.ShowContactMenuAction" class="com.blame.mates.ShowContactMenuAction"
+                text="Contact Line Author"
+                description="Contact the author of this line via various social media">
+            <add-to-group group-id="com.blame.mates.PopupContactActionGroup" anchor="first"/>
+        </action>
+        <action id="com.blame.mates.ShowContactMethodManagerAction" class="com.blame.mates.ShowContactMethodManagerAction"
+                text="Manage Contact Methods"
+                description="Edit contact methods for yourself or others">
+            <add-to-group group-id="com.blame.mates.PopupContactActionGroup" relative-to-action="com.blame.mates.ShowContactMenuAction" anchor="after"/>
+        </action>
     </actions>
+
 </idea-plugin>

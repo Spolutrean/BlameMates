@@ -45,22 +45,28 @@ public class ContactMethodEditorDialogWrapper extends JDialog {
                     comboBox.getSelectedItem().toString().toUpperCase()
             );
 
-            String hintText = "";
+            String identificatorHintText = "";
+            String nameHintText = "";
             switch (type) {
                 case EMAIL:
-                    hintText = "Enter your email:";
+                    identificatorHintText = "Enter your email:";
+                    nameHintText = "Main email";
                     break;
                 case VK:
-                    hintText = "Enter your VK nickname:";
+                    identificatorHintText = "Enter your VK nickname:";
+                    nameHintText = "Main VK account";
                     break;
                 case TELEGRAM:
-                    hintText = "Enter your Telegram nickname:";
+                    identificatorHintText = "Enter your Telegram nickname:";
+                    nameHintText = "Main Telegram account";
                     break;
                 case OTHER:
-                    hintText = "Enter a link for communication via this method:";
+                    identificatorHintText = "Enter a link for communication via this method:";
+                    nameHintText = "Another way to contact me";
                     break;
             }
-            identificatorHint.setText(hintText);
+            this.identificatorHint.setText(identificatorHintText);
+            this.name.setText(nameHintText);
         });
     }
 

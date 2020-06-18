@@ -4,6 +4,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.ui.*;
 import com.intellij.ui.components.JBList;
 import com.intellij.vcs.log.VcsUser;
+import icons.SocialMediaIcons;
 
 import javax.swing.*;
 import java.awt.*;
@@ -29,22 +30,15 @@ public class ContactMethodManagerDialogWrapper extends JDialog {
     private final String PATH_TO_CURRENT_CHANGE_BACKUP = "./~blameMatesData.json";
 
     private String getSelectedUserEmail() {
-        int selectedIndex = comboBox.getSelectedIndex();
-        return vcsUsers.get(selectedIndex).getEmail();
+        return vcsUsers.get(comboBox.getSelectedIndex()).getEmail();
     }
 
-    private ContactMethod getSelectedContactMethod(UserInformationService uis) {
-        int selectedIndex = list.getSelectedIndex();
-        return uis.getUserContactMethods(getSelectedUserEmail()).get(selectedIndex);
+    private ContactMethod getSelectedContactMethod() {
+        return (ContactMethod)list.getSelectedValue();
     }
 
     private void refreshContactMethodListModel(UserInformationService uis) {
-        listModel.replaceAll(
-                uis.getUserContactMethods(getSelectedUserEmail()).stream()
-                        .map(ContactMethod::getName)
-                        .collect(Collectors.toList()
-                        )
-        );
+        listModel.replaceAll(uis.getUserContactMethods(getSelectedUserEmail()));
     }
 
     public ContactMethodManagerDialogWrapper(Project project) {
@@ -68,7 +62,6 @@ public class ContactMethodManagerDialogWrapper extends JDialog {
 
         // prepare the list of the vcs users
         List<VcsUser> prepVcsUsers = UserInformationUtil.getAllVcsUsersByProject(project);
-        prepVcsUsers.add(0, UserInformationUtil.getAuthorizedVcsUserByProject(project));
 
         // process a list so that the users are unique by email
         prepVcsUsers = new ArrayList<>(
@@ -79,11 +72,17 @@ public class ContactMethodManagerDialogWrapper extends JDialog {
                         .values()
         );
 
+        // move the authorized VCS user to the top of the drop-down list
+        VcsUser authorizedVcsUser = UserInformationUtil.getAuthorizedVcsUserByProject(project);
+        prepVcsUsers.removeIf(user -> user.getEmail().equals(authorizedVcsUser.getEmail()));
+        prepVcsUsers.add(0, authorizedVcsUser);
+
         vcsUsers = prepVcsUsers;
 
         // set up the contact method list and operations on it
         listModel = new CollectionListModel();
         list = new JBList(listModel);
+        list.setCellRenderer(new ContactMethodCellRenderer());
 
         ToolbarDecorator toolbarDecorator = ToolbarDecorator.createDecorator(list);
         toolbarDecorator.setAddAction(anActionButton -> {
@@ -97,7 +96,7 @@ public class ContactMethodManagerDialogWrapper extends JDialog {
         toolbarDecorator.setRemoveAction(anActionButton -> {
             UserInformationService userInformationService = UserInformationService.getInstance();
 
-            userInformationService.removeUserContactMethod(getSelectedUserEmail(), getSelectedContactMethod(userInformationService));
+            userInformationService.removeUserContactMethod(getSelectedUserEmail(), getSelectedContactMethod());
             listModel.remove(list.getSelectedIndex());
         });
 
@@ -137,6 +136,17 @@ public class ContactMethodManagerDialogWrapper extends JDialog {
         }
 
         dispose();
+    }
+
+    private static class ContactMethodCellRenderer extends DefaultListCellRenderer {
+        @Override
+        public Component getListCellRendererComponent(JList jList, Object o, int i, boolean b, boolean b1) {
+            super.getListCellRendererComponent(jList, ((ContactMethod)o).getName(), i, b, b1);
+
+            setIcon(SocialMediaIcons.getIcon(((ContactMethod)o).getType()));
+
+            return this;
+        }
     }
 
 }

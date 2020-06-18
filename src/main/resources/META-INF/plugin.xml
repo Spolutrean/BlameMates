@@ -1,6 +1,7 @@
 <idea-plugin>
     <id>com.blame.mates.blame_mates</id>
     <name>BlameMates</name>
+    <version>1.0</version>
     <vendor email="ys9617890962@gmail.com" url="https://github.com/Spolutrean/BlameMates/">Yaroslav Sviridov &amp; Andrey Kashukov</vendor>
 
     <description><![CDATA[

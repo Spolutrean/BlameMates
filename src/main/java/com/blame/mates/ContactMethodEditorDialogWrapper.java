@@ -1,7 +1,5 @@
 package com.blame.mates;
 
-import com.intellij.openapi.components.ServiceManager;
-
 import javax.swing.*;
 import java.awt.event.*;
 import java.net.MalformedURLException;
@@ -23,17 +21,8 @@ public class ContactMethodEditorDialogWrapper extends JDialog {
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
 
-        buttonOK.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onOK();
-            }
-        });
-
-        buttonCancel.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onCancel();
-            }
-        });
+        buttonOK.addActionListener(e -> onOK());
+        buttonCancel.addActionListener(e -> onCancel());
 
         // call onCancel() when cross is clicked
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -44,33 +33,34 @@ public class ContactMethodEditorDialogWrapper extends JDialog {
         });
 
         // call onCancel() on ESCAPE
-        contentPane.registerKeyboardAction(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onCancel();
-            }
-        }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        contentPane.registerKeyboardAction(e -> onCancel(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 
         this.userEmail = userEmail;
 
         for (ContactMethod.Type type : ContactMethod.Type.values()) {
             comboBox.addItem(type.toString().substring(0, 1) + type.toString().substring(1).toLowerCase());
         }
-        comboBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                ContactMethod.Type type = ContactMethod.Type.valueOf(
-                        comboBox.getSelectedItem().toString().toUpperCase()
-                );
+        comboBox.addActionListener(actionEvent -> {
+            ContactMethod.Type type = ContactMethod.Type.valueOf(
+                    comboBox.getSelectedItem().toString().toUpperCase()
+            );
 
-                String hintText = "";
-                switch (type) {
-                    case EMAIL: hintText = "Enter your email:"; break;
-                    case VK: hintText = "Enter your VK nickname:"; break;
-                    case TELEGRAM: hintText = "Enter your Telegram nickname:"; break;
-                    case OTHER: hintText = "Enter a link for communication via this method:"; break;
-                }
-                identificatorHint.setText(hintText);
+            String hintText = "";
+            switch (type) {
+                case EMAIL:
+                    hintText = "Enter your email:";
+                    break;
+                case VK:
+                    hintText = "Enter your VK nickname:";
+                    break;
+                case TELEGRAM:
+                    hintText = "Enter your Telegram nickname:";
+                    break;
+                case OTHER:
+                    hintText = "Enter a link for communication via this method:";
+                    break;
             }
+            identificatorHint.setText(hintText);
         });
     }
 
@@ -82,16 +72,24 @@ public class ContactMethodEditorDialogWrapper extends JDialog {
         String nameText = name.getText();
         try {
             switch (type) {
-                case EMAIL: contactMethod = ContactMethodSimpleFactory.forEmail(identificatorText, nameText); break;
-                case VK: contactMethod = ContactMethodSimpleFactory.forVK(identificatorText, nameText); break;
-                case TELEGRAM: contactMethod = ContactMethodSimpleFactory.forTelegram(identificatorText, nameText); break;
-                case OTHER: contactMethod = new ContactMethod(type, new URL(identificatorText), nameText); break;
+                case EMAIL:
+                    contactMethod = ContactMethodSimpleFactory.forEmail(identificatorText, nameText);
+                    break;
+                case VK:
+                    contactMethod = ContactMethodSimpleFactory.forVK(identificatorText, nameText);
+                    break;
+                case TELEGRAM:
+                    contactMethod = ContactMethodSimpleFactory.forTelegram(identificatorText, nameText);
+                    break;
+                case OTHER:
+                    contactMethod = new ContactMethod(type, new URL(identificatorText), nameText);
+                    break;
             }
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
 
-        UserInformationService uis = ServiceManager.getService(UserInformationService.class);
+        UserInformationService uis = UserInformationService.getInstance();
         uis.removeUserContactMethod(userEmail, contactMethod);
         uis.addUserContactMethod(userEmail, contactMethod);
 

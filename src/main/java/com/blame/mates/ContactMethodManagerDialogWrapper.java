@@ -1,8 +1,8 @@
 package com.blame.mates;
 
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.*;
+import com.intellij.ui.components.JBList;
 import com.intellij.vcs.log.VcsUser;
 
 import javax.swing.*;
@@ -41,9 +41,9 @@ public class ContactMethodManagerDialogWrapper extends JDialog {
     private void refreshContactMethodListModel(UserInformationService uis) {
         listModel.replaceAll(
                 uis.getUserContactMethods(getSelectedUserEmail()).stream()
-                .map(ContactMethod::getName)
-                .collect(Collectors.toList()
-            )
+                        .map(ContactMethod::getName)
+                        .collect(Collectors.toList()
+                        )
         );
     }
 
@@ -52,17 +52,8 @@ public class ContactMethodManagerDialogWrapper extends JDialog {
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
 
-        buttonOK.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onOK();
-            }
-        });
-
-        buttonCancel.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onCancel();
-            }
-        });
+        buttonOK.addActionListener(e -> onOK());
+        buttonCancel.addActionListener(e -> onCancel());
 
         // call onCancel() when cross is clicked
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -73,14 +64,9 @@ public class ContactMethodManagerDialogWrapper extends JDialog {
         });
 
         // call onCancel() on ESCAPE
-        contentPane.registerKeyboardAction(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onCancel();
-            }
-        }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        contentPane.registerKeyboardAction(e -> onCancel(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 
         // prepare the list of the vcs users
-
         List<VcsUser> prepVcsUsers = UserInformationUtil.getAllVcsUsersByProject(project);
         prepVcsUsers.add(0, UserInformationUtil.getAuthorizedVcsUserByProject(project));
 
@@ -96,53 +82,39 @@ public class ContactMethodManagerDialogWrapper extends JDialog {
         vcsUsers = prepVcsUsers;
 
         // set up the contact method list and operations on it
-
         listModel = new CollectionListModel();
-        list = new JList(listModel);
+        list = new JBList(listModel);
 
         ToolbarDecorator toolbarDecorator = ToolbarDecorator.createDecorator(list);
-        toolbarDecorator.setAddAction(new AnActionButtonRunnable() {
-            @Override
-            public void run(AnActionButton anActionButton) {
-                ContactMethodEditorDialogWrapper dialog = new ContactMethodEditorDialogWrapper(getSelectedUserEmail());
-                dialog.setSize(new Dimension(500,300));
-                dialog.setResizable(false);
-                dialog.setLocationRelativeTo(null);
-                dialog.setVisible(true);
-                refreshContactMethodListModel(ServiceManager.getService(UserInformationService.class));
-            }
+        toolbarDecorator.setAddAction(anActionButton -> {
+            ContactMethodEditorDialogWrapper dialog = new ContactMethodEditorDialogWrapper(getSelectedUserEmail());
+            dialog.setSize(new Dimension(500, 300));
+            dialog.setResizable(false);
+            dialog.setLocationRelativeTo(null);
+            dialog.setVisible(true);
+            refreshContactMethodListModel(UserInformationService.getInstance());
         });
-        toolbarDecorator.setRemoveAction(new AnActionButtonRunnable() {
-            @Override
-            public void run(AnActionButton anActionButton) {
-                UserInformationService uis = ServiceManager.getService(UserInformationService.class);
+        toolbarDecorator.setRemoveAction(anActionButton -> {
+            UserInformationService userInformationService = UserInformationService.getInstance();
 
-                uis.removeUserContactMethod(getSelectedUserEmail(), getSelectedContactMethod(uis));
-                listModel.remove(list.getSelectedIndex());
-            }
+            userInformationService.removeUserContactMethod(getSelectedUserEmail(), getSelectedContactMethod(userInformationService));
+            listModel.remove(list.getSelectedIndex());
         });
 
         // set up the drop-down author list
-
         for (VcsUser user : vcsUsers) {
             comboBox.addItem(String.format("%s (%s)", user.getName(), user.getEmail()));
         }
-        comboBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                refreshContactMethodListModel(ServiceManager.getService(UserInformationService.class));
-            }
-        });
+        comboBox.addActionListener(actionEvent -> refreshContactMethodListModel(UserInformationService.getInstance()));
 
         // create a backup copy of the current json data file to revert changes on cancel/close
-
         try {
             Files.copy(Paths.get(UserInformationService.PATH_TO_DATA), Paths.get(PATH_TO_CURRENT_CHANGE_BACKUP), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        refreshContactMethodListModel(ServiceManager.getService(UserInformationService.class));
+        refreshContactMethodListModel(UserInformationService.getInstance());
         listPanel.add(toolbarDecorator.createPanel());
     }
 

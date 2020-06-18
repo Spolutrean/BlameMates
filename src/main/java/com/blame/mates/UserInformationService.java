@@ -106,6 +106,7 @@ public final class UserInformationService {
     /**
      * Gets a list of contact methods, corresponding to the user with the provided email, currently present
      * in the json data file
+     *
      * @param userEmail String containing user email
      * @return List<ContactMethod>, corresponding to the user with the provided email. If the provided email is
      * invalid, the list will be empty
@@ -128,7 +129,8 @@ public final class UserInformationService {
 
     /**
      * Adds a contact method for a user with the provided email to the json data file
-     * @param userEmail String containing user email
+     *
+     * @param userEmail     String containing user email
      * @param contactMethod ContactMethod to add
      */
     public void addUserContactMethod(String userEmail, ContactMethod contactMethod) {
@@ -140,8 +142,7 @@ public final class UserInformationService {
 
         if (userInformation.get(userEmail) == null) {
             userInformation.put(userEmail, Arrays.asList(contactMethod));
-        }
-        else {
+        } else {
             if (userInformation.get(userEmail)
                     .stream()
                     .noneMatch(method ->
@@ -155,7 +156,8 @@ public final class UserInformationService {
 
     /**
      * Removes a contact method for a user with the provided email from the json data file
-     * @param userEmail String containing user email
+     *
+     * @param userEmail     String containing user email
      * @param contactMethod ContactMethod to remove
      */
     public void removeUserContactMethod(String userEmail, ContactMethod contactMethod) {
@@ -177,6 +179,7 @@ public final class UserInformationService {
 
     /**
      * Gets a list of user emails, currently present in the json data file
+     *
      * @return List<String> containing user emails
      */
     @NotNull
@@ -188,6 +191,7 @@ public final class UserInformationService {
 
     /**
      * Adds an empty entry for a user to the json data file with the provided email as a key
+     *
      * @param userEmail String containing user email
      */
     public void addUser(String userEmail) {
@@ -208,6 +212,7 @@ public final class UserInformationService {
 
     /**
      * Removes the entry for the user with the provided email from the json data file
+     *
      * @param userEmail String containing user email
      */
     public void removeUser(String userEmail) {
@@ -224,6 +229,7 @@ public final class UserInformationService {
 
     /**
      * Returns an instance of UserInformationService
+     *
      * @return UserInformationService instance
      */
     public static UserInformationService getInstance() {
